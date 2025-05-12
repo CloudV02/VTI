@@ -9,7 +9,7 @@ void MPU_Init(MPU_Config *config){
         MPU_RegionConfig *region = config -> Regions[loop];
         MPU->RNR = region->RegionNumber;
         MPU->RBAR = region->StartAddress;
-        MPU->RASR = (region->Size << MPU_RASR_SIZE_Pos) | (region->MemoryType == MPU_MEM_STRONG_ORDER ? (0x0 << MPU_RASR_TEX_Pos): region->MemoryType == MPU_MEM_NORMAL_CACHEABLE ? (0x1 << MPU_RASR_TEX_Pos) | MPU_RASR_C_Msk ) : (0x1 << MPU_RASR_TEX_Pos) | (region->AccessRight << MPU_RASR_AP_Pos) | (region->Enable << MPU_RASR_ENABLE_Pos)
+        MPU->RASR = (region->Size << MPU_RASR_SIZE_Pos) | (region->MemoryType == MPU_MEM_STRONG_ORDER ? (0x0 << MPU_RASR_TEX_Pos): region->MemoryType == MPU_MEM_NORMAL_CACHEABLE ? (0x1 << MPU_RASR_TEX_Pos) | MPU_RASR_C_Msk ) : (0x1 << MPU_RASR_TEX_Pos) | (region->AccessRight << MPU_RASR_AP_Pos) | (region->Enable << MPU_RASR_ENABLE_Pos);
     }
 
     /* Config MPU Control*/
@@ -44,4 +44,20 @@ void MPU_DeInit(void){
 
     __DSB;
     __ISB;
+}
+
+void SetRegionConfig(MPU_RegionConfig *region){
+    MPU->RNR = region->RegionNumer;
+    MPU->RBAR = region->StartAddress;
+    MPU->RASR = (region->Size << MPU_RASR_SIZE_Pos)|(region->MemoryType == MPU_MEM_STRONG_ORDER ? (0x0 <<MPU_RASR_TEX_Pos): region->MemoryType ==MPU_MEM_NORMAL_CACHEABLE ? (0x1 << MPU_RASR_TEX_Pos) | MPU_RASR_C_Msk : (0x1<<MPU_RASR_TEX_Pos)) | (region->AccessRight << MPU_RASR_AP_Pos) | (region->Enable << MPU_RASR_ENABLE_Pos);
+
+    __DSB();
+    __ISB();
+}
+
+// use in IDE
+
+void MPU_GetErrorDetails(uint32_t* faultAddr, uint8_t* faultStatus) {
+    *faultAddr = SCB->MMFAR;   // Địa chỉ gây lỗi
+    *faultStatus = SCB->CFSR & 0xFF; // Trạng thái lỗi (MMFSR)
 }
