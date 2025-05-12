@@ -1,0 +1,47 @@
+#include "MPU_Driver.h"
+
+void MPU_Init(MPU_Config *config){
+
+    MPU->CTRL &= ~MPU_CRTL_ENABLE_Msk;
+
+    /* Config Regions */
+    for(uint8_t loop = 0; loop < config -> RegionCount; loop++){
+        MPU_RegionConfig *region = config -> Regions[loop];
+        MPU->RNR = region->RegionNumber;
+        MPU->RBAR = region->StartAddress;
+        MPU->RASR = (region->Size << MPU_RASR_SIZE_Pos) | (region->MemoryType == MPU_MEM_STRONG_ORDER ? (0x0 << MPU_RASR_TEX_Pos): region->MemoryType == MPU_MEM_NORMAL_CACHEABLE ? (0x1 << MPU_RASR_TEX_Pos) | MPU_RASR_C_Msk ) : (0x1 << MPU_RASR_TEX_Pos) | (region->AccessRight << MPU_RASR_AP_Pos) | (region->Enable << MPU_RASR_ENABLE_Pos)
+    }
+
+    /* Config MPU Control*/
+    uint32_t ctrl = 0;
+    if(config->EnableDefaultMem) ctrl |= MPU_CRTL_PRIVDEFENA_Msk;
+    if(config->EnableInException) ctrl |= MPU_CRTL_HFNMIENA_Msk;
+    ctrl |= MPU_CRTL_ENABLE_Msk;
+
+    MPU -> CTRL = ctrl;
+
+    /* MemManage Handler
+    
+    if (config->EnableMemManage) {
+        NVIC_EnableIRQ(MemoryManagement_IRQn);
+    }
+    
+    */
+
+    /* Dong bo hoa */
+    __DSB();
+    __ISB(); 
+}
+
+void MPU_DeInit(void){
+    MPU->CTRL = 0;
+    for(int loop = 0; loop < 8; loop++)
+    {
+        MPU->RNR = i;
+        MPU->RASR = 0;
+        MPU->RBAR = 0;
+    }    
+
+    __DSB;
+    __ISB;
+}
