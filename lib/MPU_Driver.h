@@ -31,6 +31,14 @@
 #define MPU_ACCESS_FULL				0x03
 #define MPU_ACCESS_READ_ONLY		0x05
 
+// Fault Status (MMFSR bits) MemManage Fault Status Register
+#define MPU_FAULT_IACCVIOL          (1 << 0) // Instruction Access Violation
+#define MPU_FAULT_DACCVIOL          (1 << 1) // Data Access Violation
+#define MPU_FAULT_MUNSTKERR         (1 << 3) // Unstacking Error
+#define MPU_FAULT_MSTKERR           (1 << 4) // Stacking Error
+#define MPU_FAULT_MLSPERR           (1 << 5) // Lazy State Preservation Error
+#define MPU_FAULT_MMARVALID         (1 << 7) // MMFAR Valid
+
 
 typedef struct{
 	uint8_t RegionNumer;
