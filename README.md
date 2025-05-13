@@ -430,7 +430,18 @@ Này nó là các phân loại kế hoạch lập lịch như dựa vào thời 
 ***Preemption:**
 Thì í muốn nói thì như nào là preemption ? Là khi OS di chuyển thread từ RUN State về Ready State, tức là khi có 1 ưu tiên ngắt cao hơn xảy ra thì cái thread hiện tại sẽ phải về Ready State. Vậy sao từ Run State đến Blocked State không thể hiện là preemption? Thì cái từ Run State đến Blocked State nó xảy ra khi cái thread này thực hiện xong ròi, vậy có khác dì thực hiện tuần tự đâu, kiểu 1 task xong lại đến task khác. Vậy nên mới bảo preemption scheduling sẽ là RUN State về Ready State. Vậy tại sao OS lại làm như vậy, tạo ra preemption algorithm? Thì Preemption is needed to guarantee fairness(cần để đảm bảo sự công bằng giữa các thread như thời gian chạy và công bằng về độ ưu tiên), Preemption needs an interrupts. Preemption helps meet deadlines (giúp đáp ứng giao hạn cho từng thread).
 
-***Scheduler Criteria**
+***Scheduler Criteria (Tiêu chí lập lịch / Tiêu chuẩn):**
+Đây là những tiêu chí hay tiêu chuẩn để đo mức độ hiệu quả, cũm như phù hợp của 1 scheduler với hệ thống.
+
+- Throughput nói về số task thực hiện được trong 1 đơn vị time hay trong 1 khoảng thời gian thực hiện được bao nhiêu task (thông lượng).
+
+- Turnaround time (thời gian hoàn thành): là thời gian mà 1 task thực hiện, từ lúc bắt đầu đến lúc kết thúc (time hoàn thành 1 task này thường không cố định nếu như xảy ra ngắt). 
+
+- Response Time(thòi gian phản hồi): là thời gian từ lúc nó được gọi ra đến lúc nó chạy. Tức là nó được gọi ra ròi đúng không nhưng vì có 1 task có độ ưu tiên cao hơn nên nó phải chờ đến lượt nó chạy. Thì thời gian nó chờ đó chính là response time.
+
+- CPU Utilization: là tỷ lệ phần trăm thời gian mà CPU bận làm việc, so với tổng thời gian hệ thống chạy.
+
+- Wait Time: là tổng thời gian thread nằm trong hàng đợi chờ được chạy.
 
 </details>
 
