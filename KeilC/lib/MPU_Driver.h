@@ -1,6 +1,7 @@
 #ifndef MPU_DRIVER_H
 #define MPU_DRIVER_H
 
+#include "stm32f4xx.h"
 #include "CMSIS_MPU.h"
 
 /* macro config for MPU */
@@ -60,7 +61,7 @@ typedef struct{
 }MPU_Config_t;
 
 /* FUNCTION DRIVER MPU */
-void MPU_Init(MPU_Config *config);
+void MPU_Init(MPU_Config_t *config);
 void MPU_DeInit(void);
 void MPU_SetRegionConfig(MPU_RegionConfig_t* region);
 void MPU_GetErrorDetails(uint32_t *faultAddr, uint8_t *faultStatus);

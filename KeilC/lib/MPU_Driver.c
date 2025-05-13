@@ -6,7 +6,7 @@ void MPU_Init(MPU_Config *config){
 
     /* Config Regions */
     for(uint8_t loop = 0; loop < config -> RegionCount; loop++){
-        MPU_RegionConfig *region = config -> Regions[loop];
+        MPU_RegionConfig *region = &config -> Regions[loop];
         MPU->RNR = region->RegionNumber;
         MPU->RBAR = region->StartAddress;
         MPU->RASR = (region->Size << MPU_RASR_SIZE_Pos) | (region->MemoryType == MPU_MEM_STRONG_ORDER ? (0x0 << MPU_RASR_TEX_Pos): region->MemoryType == MPU_MEM_NORMAL_CACHEABLE ? (0x1 << MPU_RASR_TEX_Pos) | MPU_RASR_C_Msk ) : (0x1 << MPU_RASR_TEX_Pos) | (region->AccessRight << MPU_RASR_AP_Pos) | (region->Enable << MPU_RASR_ENABLE_Pos);
@@ -37,7 +37,7 @@ void MPU_DeInit(void){
     MPU->CTRL = 0;
     for(int loop = 0; loop < 8; loop++)
     {
-        MPU->RNR = i;
+        MPU->RNR = loop;
         MPU->RASR = 0;
         MPU->RBAR = 0;
     }    
@@ -46,7 +46,7 @@ void MPU_DeInit(void){
     __ISB;
 }
 
-void SetRegionConfig(MPU_RegionConfig *region){
+void SetRegionConfig(MPU_RegionConfig_t *region){
     if(region->RegionNumer >7) return;
     uint32_t ctrl = MPU->CTRL;
     MPU->CTRL &= ~MPU_CRTL_ENABLE_Msk;

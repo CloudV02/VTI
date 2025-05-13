@@ -12,7 +12,7 @@
 
 
 
-typedef struct{
+/*typedef struct{
 	__IM  uint32_t TYPE;
 	__IOM uint32_t CTRL;
 	__IOM uint32_t RNR;
@@ -25,7 +25,7 @@ typedef struct{
 	__IOM uint32_t RBAR_A3;
 	__IOM uint32_t RASR_A3;
 
-}MPU_Type;
+}MPU_Type;*/
 
 #define MPU_TYPE_RALIASES		4U
 
@@ -91,5 +91,5 @@ typedef struct{
 #define MPU_RASR_ENABLE_Pos			0UL
 #define MPU_RASR_ENABLE_Msk			(1UL << MPU_RASR_ENABLE_Pos)
 
-#define MPU_BASE					0xE000ED90UL
-#define MPU							((MPU_Type *)MPU_BASE)
+//#define MPU_BASE					0xE000ED90UL
+//#define MPU							((MPU_Type *)MPU_BASE)
