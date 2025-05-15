@@ -23,14 +23,14 @@
 #define MPU_REGION_7				7
 
 /* MEMORY TYPE */
-#define MPU_MEM_STRONG_ORDER		0x00
+#define MPU_MEM_STRONG_ORDER			0x00
 #define MPU_MEM_NORMAL_CACHEABLE	0x01
 #define MPU_MEM_NORMAL_NONCACHE		0x02
 
 /* ACCESS RIGHTS*/
-#define MPU_ACCESS_NO_ACCESS		0x00
-#define MPU_ACCESS_FULL				0x03
-#define MPU_ACCESS_READ_ONLY		0x05
+#define MPU_ACCESS_NO_ACCESS			0x00
+#define MPU_ACCESS_FULL						0x03
+#define MPU_ACCESS_READ_ONLY			0x05
 
 // Fault Status (MMFSR bits) MemManage Fault Status Register
 #define MPU_FAULT_IACCVIOL          (1 << 0) // Instruction Access Violation
@@ -42,7 +42,7 @@
 
 
 typedef struct{
-	uint8_t RegionNumer;
+	uint8_t RegionNumber;
 	uint32_t StartAddress;
 	uint8_t Size;
 	uint8_t MemoryType;
@@ -67,5 +67,5 @@ void MPU_SetRegionConfig(MPU_RegionConfig_t* region);
 void MPU_GetErrorDetails(uint32_t *faultAddr, uint8_t *faultStatus);
 
 
+#endif
 
-#endif MPU_DRIVER_H

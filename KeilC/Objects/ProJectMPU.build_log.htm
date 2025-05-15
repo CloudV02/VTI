@@ -1,0 +1,100 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.38.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: lam ASUS, haui, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.38.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         SARMCM3.DLL V5.38.0.0
+Dialog DLL:      DCM.DLL V1.17.5.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.1.0.0
+Dialog DLL:      TCM.DLL V1.56.4.0
+ 
+<h2>Project:</h2>
+E:\VTI\KeilC\ProJectMPU.uvprojx
+Project File Date:  05/15/2025
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin'
+Rebuild target 'Target 1'
+assembling startup_stm32f401xc.s...
+compiling system_stm32f4xx.c...
+compiling main.c...
+CMSIS_MPU.h(41): warning:  #47-D: incompatible redefinition of macro "MPU_TYPE_SEPARATE_Msk"  (declared at line 1238 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_TYPE_SEPARATE_Msk		(1UL << MPU_TYPE_SEPARATE_Pos)
+CMSIS_MPU.h(55): warning:  #47-D: incompatible redefinition of macro "MPU_RNR_REGION_Msk"  (declared at line 1252 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RNR_REGION_Msk			(0xFFUL << MPU_RNR_REGION_Pos)
+CMSIS_MPU.h(65): warning:  #47-D: incompatible redefinition of macro "MPU_RBAR_REGION_Msk"  (declared at line 1262 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RBAR_REGION_Msk			(0xFUL << MPU_RBAR_REGION_Pos)
+CMSIS_MPU.h(86): warning:  #47-D: incompatible redefinition of macro "MPU_RASR_SRD_Pos"  (declared at line 1286 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RASR_SRD_Pos			8UL
+CMSIS_MPU.h(89): warning:  #47-D: incompatible redefinition of macro "MPU_RASR_SIZE_Pos"  (declared at line 1289 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RASR_SIZE_Pos			1UL
+CMSIS_MPU.h(92): warning:  #47-D: incompatible redefinition of macro "MPU_RASR_ENABLE_Pos"  (declared at line 1292 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RASR_ENABLE_Pos			0UL
+CMSIS_MPU.h(93): warning:  #47-D: incompatible redefinition of macro "MPU_RASR_ENABLE_Msk"  (declared at line 1293 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RASR_ENABLE_Msk			(1UL << MPU_RASR_ENABLE_Pos)
+main.c: 7 warnings, 0 errors
+compiling MPU_Driver.c...
+CMSIS_MPU.h(41): warning:  #47-D: incompatible redefinition of macro "MPU_TYPE_SEPARATE_Msk"  (declared at line 1238 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_TYPE_SEPARATE_Msk		(1UL << MPU_TYPE_SEPARATE_Pos)
+CMSIS_MPU.h(55): warning:  #47-D: incompatible redefinition of macro "MPU_RNR_REGION_Msk"  (declared at line 1252 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RNR_REGION_Msk			(0xFFUL << MPU_RNR_REGION_Pos)
+CMSIS_MPU.h(65): warning:  #47-D: incompatible redefinition of macro "MPU_RBAR_REGION_Msk"  (declared at line 1262 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RBAR_REGION_Msk			(0xFUL << MPU_RBAR_REGION_Pos)
+CMSIS_MPU.h(86): warning:  #47-D: incompatible redefinition of macro "MPU_RASR_SRD_Pos"  (declared at line 1286 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RASR_SRD_Pos			8UL
+CMSIS_MPU.h(89): warning:  #47-D: incompatible redefinition of macro "MPU_RASR_SIZE_Pos"  (declared at line 1289 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RASR_SIZE_Pos			1UL
+CMSIS_MPU.h(92): warning:  #47-D: incompatible redefinition of macro "MPU_RASR_ENABLE_Pos"  (declared at line 1292 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RASR_ENABLE_Pos			0UL
+CMSIS_MPU.h(93): warning:  #47-D: incompatible redefinition of macro "MPU_RASR_ENABLE_Msk"  (declared at line 1293 of "D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h")
+  #define MPU_RASR_ENABLE_Msk			(1UL << MPU_RASR_ENABLE_Pos)
+MPU_Driver.c: 7 warnings, 0 errors
+linking...
+Program Size: Code=876 RO-data=468 RW-data=0 ZI-data=1632  
+".\Objects\ProJectMPU.axf" - 0 Error(s), 14 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.9.0.pack
+                ARM.CMSIS.5.9.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.6.0
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32F4xx_DFP.2.17.1.pack
+                Keil.STM32F4xx_DFP.2.17.1
+                STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
+   * Component: Startup Version: 2.6.3
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/_Target_1
+  D:/KeliC/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+  D:/KeliC/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.6.0
+
+   * Component: Keil::Device:Startup:2.6.3
+      Source file:   MDK/Device/Source/ARM/STM32F4xx_OTP.s
+      Source file:   Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/arm/startup_stm32f401xc.s
+      Include file:  Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
+      Source file:   MDK/Device/Source/ARM/STM32F401xx_OPT.s
+      Source file:   Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>

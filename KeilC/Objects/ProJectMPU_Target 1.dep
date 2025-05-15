@@ -1,0 +1,41 @@
+Dependencies for Project 'ProJectMPU', Target 'Target 1': (DO NOT MODIFY !)
+CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7
+F (.\main.c)(0x68253593)(--gnu -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-ID:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="538" -D_RTE_ -DSTM32F401xC -D_RTE_-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+I (D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f401xc.h)(0x637457FA)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h)(0x626F58EE)
+I (C:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_version.h)(0x626F58EE)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_compiler.h)(0x626F58EE)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_armcc.h)(0x626F58EE)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\mpu_armv7.h)(0x626F58EE)
+I (D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x637457FA)
+I (D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x637457FA)
+I (MPU_Driver.h)(0x6824BC20)
+I (CMSIS_MPU.h)(0x6824B0D8)
+I (C:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdio.h)(0x5E8E4AD2)
+F (.\CMSIS_MPU.h)(0x6824B0D8)()
+F (.\MPU_Driver.c)(0x68253521)(--gnu -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-ID:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="538" -D_RTE_ -DSTM32F401xC -D_RTE_-o .\objects\mpu_driver.o --omf_browse .\objects\mpu_driver.crf --depend .\objects\mpu_driver.d)
+I (MPU_Driver.h)(0x6824BC20)
+I (D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x637457FA)
+I (D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f401xc.h)(0x637457FA)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h)(0x626F58EE)
+I (C:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_version.h)(0x626F58EE)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_compiler.h)(0x626F58EE)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_armcc.h)(0x626F58EE)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\mpu_armv7.h)(0x626F58EE)
+I (D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x637457FA)
+I (CMSIS_MPU.h)(0x6824B0D8)
+I (C:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdio.h)(0x5E8E4AD2)
+F (.\MPU_Driver.h)(0x6824BC20)()
+F (RTE/Device/STM32F401CCUx/startup_stm32f401xc.s)(0x637457FA)(--cpu Cortex-M4.fp.sp --pd "__EVAL SETA 1" -g --apcs=interwork -I.\RTE\_Target_1-ID:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include--pd "__UVISION_VERSION SETA 538" --pd "_RTE_ SETA 1" --pd "STM32F401xC SETA 1" --pd "_RTE_ SETA 1"--list .\listings\startup_stm32f401xc.lst --xref -o .\objects\startup_stm32f401xc.o --depend .\objects\startup_stm32f401xc.d)
+F (RTE/Device/STM32F401CCUx/system_stm32f4xx.c)(0x637457FA)(--gnu -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-ID:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="538" -D_RTE_ -DSTM32F401xC -D_RTE_-o .\objects\system_stm32f4xx.o --omf_browse .\objects\system_stm32f4xx.crf --depend .\objects\system_stm32f4xx.d)
+I (D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x637457FA)
+I (D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f401xc.h)(0x637457FA)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h)(0x626F58EE)
+I (C:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_version.h)(0x626F58EE)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_compiler.h)(0x626F58EE)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_armcc.h)(0x626F58EE)
+I (D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\mpu_armv7.h)(0x626F58EE)
+I (D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x637457FA)

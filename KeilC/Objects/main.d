@@ -1,1 +1,13 @@
 .\objects\main.o: main.c
+.\objects\main.o: D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f401xc.h
+.\objects\main.o: D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h
+.\objects\main.o: C:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdint.h
+.\objects\main.o: D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_version.h
+.\objects\main.o: D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_compiler.h
+.\objects\main.o: D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_armcc.h
+.\objects\main.o: D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\mpu_armv7.h
+.\objects\main.o: D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h
+.\objects\main.o: D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
+.\objects\main.o: MPU_Driver.h
+.\objects\main.o: CMSIS_MPU.h
+.\objects\main.o: C:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdio.h

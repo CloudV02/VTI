@@ -1,5 +1,5 @@
-.\objects\mpu_driver.o: lib\MPU_Driver.c
-.\objects\mpu_driver.o: lib\MPU_Driver.h
+.\objects\mpu_driver.o: MPU_Driver.c
+.\objects\mpu_driver.o: MPU_Driver.h
 .\objects\mpu_driver.o: D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
 .\objects\mpu_driver.o: D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f401xc.h
 .\objects\mpu_driver.o: D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h
@@ -9,5 +9,5 @@
 .\objects\mpu_driver.o: D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_armcc.h
 .\objects\mpu_driver.o: D:\KeliC\ARM\CMSIS\5.9.0\CMSIS\Core\Include\mpu_armv7.h
 .\objects\mpu_driver.o: D:\KeliC\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h
-.\objects\mpu_driver.o: lib\CMSIS_MPU.h
+.\objects\mpu_driver.o: CMSIS_MPU.h
 .\objects\mpu_driver.o: C:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdio.h
