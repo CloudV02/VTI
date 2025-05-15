@@ -2,7 +2,7 @@
 # AUTOSAR CLASSIC
 
 <details>
-<h1><summary>Base Software(BSW)</summary></h1>
+<h1><summary>2. Base Software(BSW)</summary></h1>
 
 <details><h2><summary>Base Software Overview(BSW)</summary></h2>
 Layered Architecture
@@ -50,7 +50,7 @@ Example: "DIO_ReadChannel" API is defined by Autosar to read an IO pin by other 
 
 
 <details>
-<h1><summary> Software Components</summary></h1>
+<h1><summary>3. Software Components</summary></h1>
 <details>
 <h2><summary> Software Components</summary></h2>
 
@@ -85,7 +85,47 @@ A software component can be categorized to atomic software component type, Param
 <details>
 <h2><summary> Software Components(Example)</summary></h2>
 
+</details>
+
+
+<details>
+<h1><summary>4. Ports and Interfaces </summary></h1>
+<details>
+<h2><summary>Autosar Port Interfaces</summary></h2>
+
+Tóm lại ghi 1 đống bên dưới chả hiểu dell gì, xem lai sau.
+
+Port: Autosar Architecture proposes(đề xuất) Ports as the mode of communication between Autosar modules.
+- Provider Port(P-Port)
+- Receiver Port(R-Port)
+- ProviderReceiver Port(PR-Port)
+
+Port Interfaces: The kind of information that are communicated between ports are defined by port interfaces. Oke t sẽ nói rõ hơn vì nghe nó hơi trừu tượng thì nó là 1 thành phần định cách SWCs giao tiếp với nhau, nó kiểu mô tả dữ liệu và cách truyền nhận dữ liệu giữa các SWCs. Và theo t đọc thì cái port interface định nghĩa các dịch vụ hoặc dữ liệu mà 1 SWC cung cấp hoặc yêu cầu thông qua ports. Thì nghe khó hiểu vc nên mình sẽ đưa ví dụ
+
+Ex: 
+- Thông tin thứ 1 giả sử có 1 interface tên  SpeedInterface (dạng Sender-Reciver, chứa 1 data element: VehicleSpeed kiểu uint16)
+- Thông tin thứ 2 là sẽ có 2 Software Component(SWC): SensorComponent và DisplayComponent.
+Thì Sensorcomponent có PPort tên SpeedSenderPort, gắn với SpeedInterface
+DisplayComponent có RPort tên SpeedReceiverPort, cũng gắn với SpeedInterface.
+-> SpeedInterface là định nghĩa trung gian nó cũm là 1 cái swc nhưng là nơi trung gian để các swc khác nhìn đến
+
+Thì như t thấy ở ví dụ cơ bản thì sẽ có 2 SWC, 1 cái truyền 1 cái nhận và nó sẽ thông qua RTE để truyền nhận dữ liệu giữa các SWC, nhưng mà câu hỏi đặt ra Port thực chất là cái gì, các cái Interface nằm ở lớp nào? Thì t đọc thì mấy cái port hay port interface này chỉ là các cái config giống như trong tool stm32cube dell gì ấy cũm có mấy cái phần config cho port kiểu pullup, pull down chẳng hạn. Thì ở đây là cấu hình port hoặc port interface để t ra các hàm RTE 
+
+**We have 6 type of interfaces that can be chosen based on the information that is communicated**
+
+- Sender Receiver Interface: is used for communicating data between ports. Data can be any information in terms of primitive(nguyên thủy) or complex types.
+Example: Variables of type interger, float, structure, ...
+    - to send such data a component should have a provider port defined with a sender receiver port interface.
 
 
 </details>
+</details>
+
+
+
+
+
+
+
+
 </details>
