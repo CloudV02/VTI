@@ -32,6 +32,7 @@ Thì các Layer trên cũm được phân hóa về mặt phần mềm để cho
 
 <h2><summary>3.2.AUTOSAR Layered Architecture</summary></h2>
 <details>
+
 - Application layer: So your application code, it sits in this application layer.
 - Runtime evirionment is like a virtual function bus, which makes your application independent of the below layer this part is called BSW that basic software.
 - BSW: consists of service layer,ECU absraction layers and lowest is your microcontroller and above microcontroller we have MCAL. And this is BSW complete.
@@ -139,9 +140,109 @@ Thực ra cũm dell hiểu lắm
 
 </details>
 
-<h2><summary>3.4. Configuration Classes and Interfaces in Autosar</summary></h2>
+<h2><summary>3.4. AUTOSAR Methodology</summary></h2>
 <details>
 
+![System Diagram](./Autosar_Methodogy.png)
+
+1. System configuration
+
+Nó sẽ gồm 2 file XML và sẽ có quá trình configure system từ file system configuration input.xml config sang system configuration decription.
+
+Thì cái system configuration có mục tiêu là thông nhất giữa các SWCs mà mình mô tả qua autosar tool hay là system inputs(XML) với các hardware trong ECU dựa vào file schema (XSD) của hệ thống Autosar
+
+- System configuration Input thì nó gồm cái gì? Thì theo t được biết nó sẽ chính là các file arxml mà mình thiết lập tức là nó sẽ chứa các thông tin thoi và nó sẽ ràng buộc với file hệ thống(như kiểu nếu khai báo SWC này phải bắt buộc chạy trên ECUx, tương đương cũm rằng buộc về bus ròi vì phần mềm cũm phải thông qua bus thoi), như thông tin các SWC, các giao tiếp communication matrix (mô tả truyền dữ liệu qua CAN, LIN,..), System Description là cái SWC này sẽ có những port nào kiểu kiểu vậy. Thì tức là mới là thông tin thoi, giống kiểu m có 1 đống tài liệu nhưng m đưa cho ai thì chưa biết.
+
+- Đó thì thông quá bước config system là quá trình liên quan tới việc mapping các cái System elements tới các Software elements(tức là mapping những cái signal hay các đường bus trong ECU với lại software của mình í) nó sẽ tạo ra system configuration Description 
+
+- System Configuration Decription nó sẽ nói về có bao nhiêu ECU trên hệ thống và chúng ta kết nối chúng như nào vào các ECUs và 1 cái SWC sẽ dùng những port nào, interfaces nào hay frame truyền sẽ như nào, và các SWC sẽ mapping vào ECUs nào. Thì nói về ECU Extract thì nó thay vì kiểu nhìn toàn bộ hệ thống thì nó sẽ chỉ quan tâm tới 1 ECU cụ thể.
+
+2. Extraction of the ECU specific information
+
+- Tức là thông qua cái quá trình Extract ECU Specific Info nó sẽ tạo ra nhiều file xml ECU Extract of System Configuration, và cái file này nó chứa các thông tin tương tự cái system configuration decription nhưng mà nó sẽ chỉ chứa thông tin của 1 ECU duy nhất.
+
+3. ECU Configuration
+
+Tức là quá trình này nó sẽ có 1 cái config ECU và tạo ra file ECU Configuration.
+
+Nó sẽ kết nối ECU tương ứng với BSW tương ứng tới tầng RTE (tức là như nào thì ECU này có thể làm việc với ECU khác mà, nên là bước này giống kiểu ECU nào cần BSW của cái nào sẽ gửi thông tin chứ chưa kết nối), nhằm tạo kết nối giữa SWC và BSW. Và để kết nối với BSW thì sẽ có 1 file Basic Software Module Description.
+
+4. Generation of module configuration
+
+![System Diagram](./ExtractBSW.png)
+
+Thực ra đây là 1 cái khá mới so với khóa kia nhưng mà t nghĩ nó cũm như trong C thoi, thì nó sẽ tạo ra các file BSW.c, BSW.h tương ứng và cái ECU nào cần thì chỉ cần link cái object đó vào để dùng và tạo ra file thực thi là ECU Executable.
+
+
+5. AUTOSAR Methodlogy Summary
+
+![System Diagram](./Overview_Autosar_Method.png)
+
+
+Cái ảnh này nó overview toàn bộ luôn
+</details>
+
+<h2><summary>3.5. Conformance Classic (lớp tuân thủ)</summary></h2>
+<details>
+
+Tức là cái phân loại ở đây muốn phân loại về kiểu chức năng ấy, có 1 số module như sensor temp chẳng hạn nó chẳng cần phải lưu vào NVM, hay check diagnostic, mà thông thường nó sẽ trực tiếp ghi giá trị vào SWC chẳng hạn.
+Nói thêm nữa tại sao lại có cái này, cảm giác nó bị phá cái Autosar như cái ICC1 đúng không? Nhưng mà kiểu mấy cái ECU đơn giản như đọc mỗi cảm biến thoi mà làm theo quy chuẩn nó sẽ lằng nhằng hơn, thì ngta mới chia ra các loại cho mn dễ hiểu. Kiểu nói với thằng kia đây là ICC1 đấy, không có RTE đâu, code thẳng đi, kiểu vậy.
+
+
+- ICC1: Thì nôm na ban đầu là RTE và BSW sẽ là 1, tức là SWC sẽ làm việc trực tiếp xuống dưới luôn, đương nhiên là không đúng quy chuẩn với Autosar rồi, nhưng nó phù hợp với các ECU chi phí thấp như sensor thoi. Thì cái như nào là ICC1 thì nó sẽ không có Diagnostic, NVRam, Routing hoặc có thì có LIN, CAN đơn giản. Thì nó sẽ gộp build chung với RTE, vì chẳng cần tách ra để reuse.
+
+
+dmm cái này xem lại sau(YT có giair thích)
+
+</details>
+
+<h2><summary>3.6. Autosar Use Case</summary></h2>
+<details>
+
+</details>
+<h2><summary>3.7. Migration Stategies</summary></h2>
+<details>
+
+Này nó liên kết phần 3.5 (xem thử trên YT)
+</details>
+</details>
+
+<h1><summary>4. RTE</summary></h1>
+<details>
+
+<h2><summary>4.1.RTE Entities - SWC, Composition, Ports</summary></h2>
+<details>
+
+Thì bài này nói về các loại SWC thì có 3 loại chính là Atomic, Parameter, Composition SWC:
+- Nói về Parameter SWC là kiểu cung cấp các value chuẩn mà mình đã thiết lập từ đầu cho các SWC khác, và Paramater SWC sẽ không có khả năng thực hiện như viết hàm các thứ
+- Nói về Composition SWC: thì nó sẽ chứa các SWC khác là các Atomic SWC đóa, thì việc nhóm này để gọi là cho nó trừu tượng, VD: Điều khiển quạt tản nhiệt chẳng hạn, cần tới 2 SWC (1 SensorActuator SWC để đọc dữ liệu từ sensor và 1 ECU Abstraction cho I/O của ECU -> gộp vào dễ quản lý).
+- Nói về Atomic SWC thì nó sẽ là SWC thấp nhất và làm việc với RTE or layer dưới (nó sẽ chia thành 7 loại):
+    - Application SWC: thì đây là 1 cái SWC bình thường thoi, làm những công việc ứng dụng.
+    - SensorActuator SWC: Đây là SWC dùng để xử lý sensor và actuators.
+    - Service Proxy SWC: Service ở đây giống như là server là người cung cấp hàm cho các client khác. Nhưng mà đối với Service Proxy nó sẽ không chưa service thật, nó giống như là người đứng ở ngã 3 và chỉ 2 hướng còn lại tới service thật. Nghĩa là sẽ có thể có nhiều ECU truy cập vào service proxy.
+    - Service SWC: Còn đối với Service SWC này thì nó chính là Service thật, nó sẽ ở yên đợi client xin, hoặc service proxy sẽ lấy nó.
+    - ECU Abstraction SWC: Thì nó sẽ làm việc trực tiếp với BSW modules, làm việc trực tiếp với I/O mà không thông qua RTE. Có mỗi cái SWC này làm được việc đóa thoi.
+    - Complex Device Driver SWC: Thì làm việc với CDD thoii.
+    - Nvblock SWC: SWC này để làm việc với bộ nhớ
+
+Bài này còn nói qua về Port: sẽ có Provider Port và Receive Port (PPort và RPort) đơn giản đây là phương tiện giao tiếp giữa các SWC hay SWC với BSW ỵoi.
+</details>
+
+<h2><summary>4.2.Connector</summary></h2>
+<details>
+
+![System Diagram](./Connector.png)
+
+Thì cái định nghĩa conector này là nó được dùng khi mình dùng Composition SWC thoi thì sẽ có 2 loại connector
+- Đầu tiên là Assembly Connector: Thì nó là kiểu connector giữa các SWC bên trong cùng 1 composition SWC. Và giữa 2 Composition cũm có thể dùng Assembly Connector có thể xem ảnh để hiểu cho rõ
+- Còn Delegation Connector nó sẽ xuất hiện khi ta muốn giao tiếp giữa các SWC ở Composition khác nhau. Thì để giao tiếp được với nhau thì phải thông qua Composition. Và chúng ta kết nối SWC mà cta muốn giao tiếp tới Composition hiện tại bằng Delegation Connector (xem ảnh).
+</details>
+
+<h2><summary>4.3.Internal Beaviour-Runnables</summary></h2>
+<details>
+
+Thì cái này t thấy trong file arxml rồi
+Thì cái này nói về cách hoạt động bên trong SWC cụ thể sẽ là 7 cái SWC trong Atomic SWC.
 
 </details>
 </details>
