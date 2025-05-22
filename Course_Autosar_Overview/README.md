@@ -244,5 +244,38 @@ Thì cái định nghĩa conector này là nó được dùng khi mình dùng Co
 Thì cái này t thấy trong file arxml rồi
 Thì cái này nói về cách hoạt động bên trong SWC cụ thể sẽ là 7 cái SWC trong Atomic SWC.
 
+Trong cái này nó sẽ có Runable Entity, RTE event, Exclusive Areas
+
+**Runnable Entity**
+
+- Đầu tiên với Runable thì nó được coi như là 1 function thực hiện các chức năng, thì trong Runable có thể có nhiều Runable với các chức năng khác nhau hoặc được gọi ra 1 cách khác nhau như event (sẽ nói ở bên dưới), thì các runnable này được đặt tên hoặc đặt ở đâu hay sẽ được gắn cho event nào sẽ được config bởi AUTOSAR file arxml. Thì trong Autosar, mọi thứ đều được configuration based, vì vậy mọi thứ đều kiểu static. Thì theo đúng quy trình là các runnable phải được configure, các port cũm được configure, xong rồi sẽ được generated, và sẽ tạo ra các runnable file C và ta sẽ viết data vào trong đấy. Và trong quá trình run-time, mình dell thay đổi gì được vào autosar. Thì sẽ có 3 loại Runable:
+    - Init Runnable: Là các runnable được định nghĩa là khi khởi tạo 1 cái ECU, nó sẽ được gọi đến để khởi tạo biến cấu trúc nội bộ .. và được gọi đúng 1 lần khi khởi động ECU, nên nhớ runnable là 1 cái hàm và cái init ở đây nó sẽ giống như là GPIO_Init đấy :)) thì mình vẫn phải viết ra. (InitEvent)
+    - Periodic Runnable: Tức là cứ tới 1 thời điểm nào đó sẽ gọi Runnable đó 1 lần (Timing Event)
+    - Server Runnable: thì runnable này chỉ chạy khi có kiểu service Client/Server thông qua port interface. (OperationInvokedEvent)
+
+
+**RTE Events**
+
+Thì các cái configured của runnable sẽ được kích hoạt bởi RTE events có 6 loại:
+
+- Timing Event: thì đây là các sự kiện kiểu định sẵn thời gian, kiểu trong khoảng thời gian bao nhiêu chạy đến runnable đấy hoặc runnable đấy chạy được bao lâu.
+- Operation Invoked Event: thì tức là 1 cái sự kiện của client và server, 1 cái client sẽ gọi cái server liên quan, thì nó sẽ sinh ra event ở server service.
+- Mode Switch Event: tưc là trước khi mình thay đổi 1 cái mode gì đấy ở ECU, thì nó sẽ thực hiện 1 cái runnable nào đó trước khi switch. Giống như kiểu mình muốn switch shotdown mode của ECU, thì nó sẽ chạy tới 1 runnable lưu data hiện tại chẳng hạn rồi mới chuyển đổi.
+- Data received event: tức là nó sẽ kích hoạt 1 cái runnable khi mà cái data, mà từ PPort gửi về done, thì nó sẽ kích hoạt runnable liên quan đến cái PPort và kích hoạt RPort thông qua runnble đó lấy cái data đấy.
+- Data received Error Event: thì như cái tên :)) data nhận bị lỗi thì sinh ra Runnable.
+- Data send completed Event: như cái tên tiếp thì khi gửi data hoàn thành tạo 1 cái runnable thông báo.
+
 </details>
+
+<h2><summary>4.4.RTE Overview</summary></h2>
+<details>
+
+Nói chung là nó giới thiệu về RTE thoi.
+
+</details>
+
+<h2><summary>4.5.RTE Overview</summary></h2>
+<details>
+
+
 </details>
