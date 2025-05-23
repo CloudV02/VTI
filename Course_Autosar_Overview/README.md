@@ -274,8 +274,107 @@ Nói chung là nó giới thiệu về RTE thoi.
 
 </details>
 
-<h2><summary>4.5.RTE Overview</summary></h2>
+<h2><summary>4.5.Sender Receiver Interface</summary></h2>
 <details>
 
+Nói qua về Interface trước thì nó được config trong arxml, thường thì nó sẽ nói về sự liên kêt giữa các port. Các port có cùng interface sẽ liên kết với nhau, và port với interface sẽ cùng nhau gen ra các hàm C.
 
+Thì có 6 Interface chính như sau:
+- Sender Receiver Interface: là interface dùng cho truyền nhận data giữa các port, thì data ở đây thông thường là 1 cái biến thoi. Thì bên gửi sẽ gửi dât còn bên nhận làm gì thì không biết, nên nó sẽ có kiểu 1 cái data sẽ nhiều bên nhận.
+- NV Data Interface: là interface dùng cho việc truyền nhận data từ flash (các data không bị biến mất lúc shutdown). Còn việc yêu cầu data từ flash như nào là do mình. Mình muốn cái SWC đấy chỉ đọc data hoặc chỉ gửi data, hoặc cả 2 thì do mình config.
+- Mode Switch Interface: thì cái interface này dùng cho trạng thái hệ thông như RUNNING, STANDBY. Thì như ta đã nói về mode switch event nó sẽ kích hoạt khi trạng thái hệ thống thay đổi. Thì đây khi hệ thống thay đổi nó sẽ gửi data về Interface này và sẽ kích hoạt cái runnable sử dụng cái mode switch interface.
+- Client Server Interface: thì Interface này là kiểu Client sẽ gọi 1 cái hàm giống như function call á, kiểu mình từ hàm main xong gọi đến hàm đó để chạy, ròi lại về hàm main để tiếp tục, kiểu kiểu vậy á. Thì cái client sẽ gọi 1 cái function từ service thoi.
+- Parameter Interface: là Interface dùng cho việc trao đổi giữa runnable và data của hệ thống(được cofig sẵn ngay từ đầu chỉ đọc, không ghi).
+- Trigger Interface: thì cái này giống kiểu có 1 cái lỗi gì đó của hệ thống thì nó sẽ tự trigger cái runnable này (diagnostic sẽ là nơi có thể sẽ kích hoạt cái runnable này) với lại m nhìn mấy cái event ấy, có mấy cái event error thì khả năng chính là sử dụng interface này.
+
+
+Ở bài này còn nói về có 2 comunication là implicit và explicit.
+Ngoài ra còn có Supports data distribution (Unqueued) và Event distribution (Queued).
+</details>
+
+<h2><summary>4.6.Queued vs non queued communication(thấy được sử dụng trong Sender-Receiver)</summary></h2>
+<details>
+
+Thì nó nói về cái quá trình truyền nhận của sender-receiver đấy.
+
+Thì kiểu nó có thể có nhiều bên gửi sender và 1 bên nhận reiceiver, vậy phân bố các cái data được gửi đến đấy như nào.
+
+**Queued communication**
+- Thì giao tiếp theo trình tự thành nào gửi trước thì lấy trước theo đúng cơ chế FIFO (First in first out).
+
+**Unqueued Communication**
+- Thì nếu không queuce thì nó sẽ kiểu lấy dữ liệu của cái mới nhất, ví dụ có 2 sender 1,2 và cái sender 2 là cái mới gửi vào nhất. Thì nó sẽ nhận sender 2 và sender 1 sẽ bị mất dữ liệu.
+</details>
+
+<h2><summary>4.7.Implitcit vs Explicit Communication(thấy được sử dụng trong Sender-Receiver)</summary></h2>
+<details>
+
+Được rồi thì nước trước là phần này nó thường được nằm trong Sender-Receiver Interface
+Đó thì nó sẽ nói về 2 cái Implicit và Explicit Receive
+- Về Implicit tức nghĩa là nó sẽ cố định cái buffer cho 1 RPort, cố định port nhận với với port gửi. Và cái buffer đấy nó sẽ lấy cái giá trị từ port gửi trước và sau khi excecution (execution là quá trình runnable có RPort chạy). Và trong cái runnable của RPort mình không cần phải gọi ra cái hàm(hay runnable) của bên gửi mà chỉ cần lấy buffer, là có dữ liệu. Và việc cố định này nó sẽ chỉ tốt cho việc mình muốn giao tiếp 1-1 và các port khác sẽ không đụng vào.
+- Về Explicit thì nó sẽ không có buffer cố định, tức là khi mà cái runnable của bên nhận nó chạy thì mình mới lấy dữ liệu của bên gửi trong cái runnable đấy. Và việc lấy dữ liệu là mình sẽ gọi hẳn hàm(hay runnable) của bên gửi, thay vì chỉ gọi buffer như Implicit. Thì việc này sẽ giúp bên nhận có thể có nhiều bên gửi, vì nó không bị config cứng giữa các port. Thì đương nhiên việc port nhận nào sẽ có những port gửi nào, vẫn phải được config trong file arxml ròi. Nhưng mà thay vì giao tiếp 1:1, thì giờ giao tiếp được nhiều thoi. Và khi bị config cứng như vậy t đoán kiểu bên nhận nó sẽ có 1 cái buffer riêng do Autosar cung cấp và khi gọi cái hàm nào thì cái buffer riêng đó sẽ lấy dữ liệu có cái hàm gửi đó và thực hiện thoi, chứ không phải như Implicit là chỉ được lấy 1 cái buffer của bên gửi thoi.
+</details>
+
+<h2><summary>4.8.Client-Server Interface</summary></h2>
+<details>
+
+Ở đây ta sẽ nói qua về Interface này, nó sẽ có 2 loại synchronous and asynchronous
+
+- synchronous thì là gọi hàm bên server xong chờ cho nó xử lý xong mới quay lại client làm tiếp. Thì nó sẽ giống như trong C thông thường thoi.
+
+- asynchronous thì gọi hàm xong cái, thì kệ đó nó chạy mình quay về làm tiếp ở phần client. Thì ví dụ hàm bên ấy có cái dữ liệu gì trả về thì lưu vào buffer của sender-receiver thì cứ có data biến là phải dùng sender-receiver rồi
+
+Còn việc nó thực hiện như nào thì nói bên trên ròi client gọi và server sẽ thực hiện cái service(hay hàm) mà client yêu cầu (nó được config sẵn trong AUTOSAR arxml).
+</details>
+
+<h2><summary>4.9.Communication between SWC and BSW</summary></h2>
+<details>
+
+Hmmm thì cái này nó nói về giao tiếp giữa SWC và BSW thoi, thì nó sẽ use các cái Interface như Server, hay sender-rêciver interface như bthg, và phải thông qua RTE.
+</details>
+
+<h2><summary>4.10.Intra & Inter ECU Communication</summary></h2>
+<details>
+
+Ở đây sẽ giới thiệu 2 cái:
+- Intra ECU Communication via RTE: tức là đây là giao tiếp giữa 2 hoặc nhiều cái SWC trong 1 ECU, nhớ đó 1 ECU thoi nên nó chỉ thông qua RTE là tới cac SWC.
+- Còn Inter ECU Communication via RTE & BSW: đây là giao tiếp giữa 2 hoặc nhiều SWC mà khác ECU. Thì để giao tiếp được nó phải thông qua lớp RTE và đến các COM(hay các giao thức như CAN, LIN) dưới BSW để giao tiếp với ECU khác.
+
+</details>
+
+
+<h2><summary>4.11 RTE Generation</summary></h2>
+<details>
+
+Hmmmm thực ra bài này cũm được nó nói về cách các RTE đặt tên :v nhưng mà lười quáa lúc nào xem lại rồi ghi lại sau
+
+
+Oke thì RTE Generaion sẽ có 2 giai đoạn chính: RTE Contract Phase và RTE generation Phase.
+
+- Đầu tiên là giai đoạn RTE Contract: Thì đây là giai đoạn mà chúng ta sẽ gen ra các API hay các file header (.h) Thì để t ra file.h đương nhiên RTE sẽ phải dựa vào SWC này, dựa vào Port, dựa vào Interface của các SWC, và cách các SWC kết nối. Và từ đó sẽ Gen ra file.h. Vậy thì có những thông tin gì từ 1 SWC:
+    - Component Type Description : mô tả loại SWC(ví dụ nó là application hay ECUAbstraction SWC)
+    - Component Internal Behavior Description: mô tả các runnable, RTE events các kiểu đóa.
+    - The actual source and/or object code: ý muốn nói mình muốn config cho tên các cái source hay cái object code như nào?
+    - Component Implementation Description: Này là mô tổ các cái SWC thực hiện như nào, như là nối port này với port nào,...
+    ![System Diagram](./RTE_Contract.png)
+
+    - Thì nhìn vào bức ảnh này ta thấy 2 file xml, 1 cái mô tả về SWC, 1 cái sẽ là của Interface(hay Internal Behavior), thì 2 cái file này nó giống như cái ví dụ demo ở bên khóa kia -> thì kết hợp 2 file này vào sẽ tạo ra file.h
+
+- Tiếp theo đến giai đoạn RTE generation Phase thì nó sẽ chia là 2 section:
+    - RTE Configuration Editing: Tức là cái section này sẽ tổng hợp các cái thông tin cần thiết từ quá trình ECU Configuration Description và từ đó config xuống dưới tầng BSW các thông tin cần thiết cho hệ thống như COM và OS. Và viện ECU Configuration Editor sẽ liên tục làm việc là tổng hợp các cái dữ liệu từ ECU Configuation Description đến khi mà việc config những thứ cần thiết cho BSW được hoàn tất hay được giải quyết. Khi các vấn đề config được giải quyết thì sẽ đến giai đoạn RTE Generator lúc này RTE thật sẽ compiled và linked các phần ở BSW với SWC.
+    - RTE Generation Phase: 
+
+</details>
+</details>
+
+<h1><summary>5. Startup and Shutdown Sequence</summary></h1>
+<details>
+
+<h1><summary>5.1. Startup Sequence</summary></h1>
+<details>
+
+Oke nói về quá trình start up thoii, cơ bản cũm dễ hiểu nhiều step, nên xem nhiều để nhớ thoi.
+
+
+</details>
 </details>
