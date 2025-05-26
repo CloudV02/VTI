@@ -362,7 +362,24 @@ Oke thì RTE Generaion sẽ có 2 giai đoạn chính: RTE Contract Phase và RT
 
 - Tiếp theo đến giai đoạn RTE generation Phase thì nó sẽ chia là 2 section:
     - RTE Configuration Editing: Tức là cái section này sẽ tổng hợp các cái thông tin cần thiết từ quá trình ECU Configuration Description và từ đó config xuống dưới tầng BSW các thông tin cần thiết cho hệ thống như COM và OS. Và viện ECU Configuration Editor sẽ liên tục làm việc là tổng hợp các cái dữ liệu từ ECU Configuation Description đến khi mà việc config những thứ cần thiết cho BSW được hoàn tất hay được giải quyết. Khi các vấn đề config được giải quyết thì sẽ đến giai đoạn RTE Generator lúc này RTE thật sẽ compiled và linked các phần ở BSW với SWC.
-    - RTE Generation Phase: 
+    - RTE Generation Phase: thì giai đoạn này là lúc mình tạo ra các luông RTE thật sự là file.c
+
+
+![System diagram](RTE_Generation_Phase.png)
+
+-> Thì theo chat GPT cũm như theo như t ghi thì các giai đoạn tổng hợp sẽ như sau thì RTE Constract sẽ xác định các cấu trúc SWC, port, runnable, ... tức là chỉ nói tới các thông tin và tạo ra các VFB sinh ra file.h, tiếp theo sẽ đến RTE Configuration Editer sẽ là config các tầng bên dưới, như init(), hoặc là nó sẽ kết nối SWC vào các ECU hay mapping port,.. Còn RTE Generation nó sẽ tạo ra các file.c tạo ra cái luồng dữ liệu thật sự. Mặc dù nói các giai đoạn tạo ra file.h, file.c nhưng trên thực tế đến lúc hết 3 cái giai đoạn kia nó mới tạo ra các file.h, file.c thực sự, các giai đoạn chỉ là ngầm định thoi. Coi như cái RTE Generation Phase chính là giai đoạn tổng hợp tất cả các thông tin phía trên để tạo ra các file thật sự. Đây thì hình ảnh bên dưới cũm chỉ rõ sự ngầm định đóa, bằng việc chỉ RTE Contract Phase là Application Header(.h)
+
+![System diagram](overview_RTE.png)
+
+
+Thì vừa này là quá trình còn bây h ta sẽ nói về các file.c, file.h được tạo ra có những file nào và chức năng
+
+- Rte.c: thì file này sẽ tạo ra các biến(instance) của những struct được sử dụng cho mỗi SWC mà RTE tạo ra và ngoài ra còn các API hay hàm gọi ra các SWC được khai báo trong đó. (thực ra cái này muốn rõ hơn thì xem lại video)
+- Rte_Type.h: thì nó là kiểu dữ liệu trong AUTOSAR mà mình định nghĩa lại.
+- RTE Application Header File: thì file này sinh ra là header file của 1 Atomic SWC, và khi nào dùng đến SWC tương ứng mình gọi file.h tương ứng để lấy các biến các hàm liên quan 'RTE_<SW-Component name>.h'
+- Rte_Hook.h: đây là header của VFB Trace, thì cái VFB Trace nó sẽ theo dõi quá trình truyền nhận, trao đổi thông tin giữa các SWC, hoặc những SWC qua tầng RTE, file này được tạo ra khi mình enabled VFB Trace.
+- Rte_Cbk.h: cái này nó sẽ chứa các hàm callback, tức là các hàm kiểu như ngắt ấy, kiểu trong nhiều trường hợp, BSW layer,hoặc RTE không trực tiếp điều khiển các hành vi mà cần phả gọi 1 hàm nào đó như kiểu có tín hiệu CAN đến, thì RTE hay BSW sao biết luoon được và cái RTE Application cũm không biết trước, thì cần những file.h này để biết.
+
 
 </details>
 </details>
@@ -370,11 +387,75 @@ Oke thì RTE Generaion sẽ có 2 giai đoạn chính: RTE Contract Phase và RT
 <h1><summary>5. Startup and Shutdown Sequence</summary></h1>
 <details>
 
-<h1><summary>5.1. Startup Sequence</summary></h1>
+<h2><summary>5.1. Startup Sequence</summary></h2>
 <details>
 
-Oke nói về quá trình start up thoii, cơ bản cũm dễ hiểu nhiều step, nên xem nhiều để nhớ thoi.
+Oke nói về quá trình start up thoii, cơ bản cũm dễ hiểu nhiều step, nên xem nhiều để nhớ thoi. Thì t sẽ nói ngắn gọn như trong video luôn.
+
+Đầu tiên bật nguồn đúng không thì nó sẽ phân bổ bộ nhớ các thứ thì tiếp theo nó sẽ vào cái bootloader chính của hệ thống để nhảy vào Boot Manager và để check xem hệ thống có gì hay chưa, nếu có thì nhảy tới application main và check 1 cái application và check tiếp xem nó có bắt lập trình lại không và nếu không thì mình qua Bootloader thoi. Tiếp theo ta sẽ nói về trong cái main function của Autosar thì có EcuM (cái này sẽ có hẳn mấy bài bên dưới), và EcuM sẽ được gọi và nó bắt đầu init Cdd và 1 số BSW modules. Và sau đó OS sẽ chạy và bắt đầu tự động chạy các task. Bằng việc vào cái Schm init function (Schm_init()) để chạy định kỳ các task BSW, kiểu nên kích hoạt BSW module nào trước nào sau đóa và khởi tạo BswM. Tiếp đến NvM_ReadAll được init trong vòng lặp do-while (này là gửi dữ liệu từ flash lên RAM). Và các modules mà dựa vào việc NvM_ReadALl hoàn thành như Dem(Diagnostic event manager) được khai báo. Sau đó SWCs sẽ được khai béo trước gọi là quá trình thực thi application. Tiếp đến WdgM(Watchdog Manager) sẽ được khai báo và RTE sẽ được chạy bằng việc bắt đầu API.
+
+Và dưới đây ta sẽ nhìn tổng quan về qus trình startup và có nhiều câu hỏi như BswM_Init, ECuM Init là cái gì và nó nằm ở đâu, thì mình sẽ giải đáp sau.
+![System Diagram](overview_startup_sequency.png)
+
+
+**Kết luận**
+
+Thì việc startup sequence cho 1 ECU sẽ được xử lý bởi ECU Manager module or EcuM. Thì EcuM nó sẽ chịu trách nhiệm cho viẹc init cái gì cũm như không định nghĩa gì cho toàn bộ ECU. Và trong việc thực hiện 1 ECU sẽ có 3 layer chính là BSW manager, Autosar OS, and the Scheduler Manager(SchM). Do đó thì EcuM cũm sẽ chịu trách nhiệm init cũm như deinit cho cả 3 layer kia luôn, cũm như 1 số module BSW cơ bản. Thêm nữa EcuM cũm chịu trách nhiệm cho việc xử lý các trạng thái của ECU như SLEEP hay SHUTDOWN state
+
+-> Tức là EcuM sẽ quản lý vòng đời của 1 ECU và cách khởi tạo, tức là nó sẽ là người hướng dẫn cho ECU đó.
+</details>
+
+<h2><summary>5.2. Shutdown Sequence</summary></h2>
+<details>
+
+Thì đầu tiên sẽ có 1 communication bật lên để yêu cầu các quá trình phải disable và sau đó trình ECU Manager sẽ chuyển đổi trạng thái ECU sang POST RUN. Và 1 cái BswMCallouts được thiết lập để lưu các thông tin application của BSW modules trước và sau khi hủy khởi tạo (deinit). Tiếp theo là sẽ lưu hết các thông tin về Flash bằng việc sử dụng NvM_WriteAll trong 1 vòng lặp do-while. Sau đó phụ thuộc vào cái shutdown target, the sleep và the MCU perform reset API sẽ được gọi.
+
+Lưu ý là nếu trong quá trình shutdown phase mà có 1 sự kiện wakeup, thì ECU Manager module sẽ hoàn thành việc shutdown và restart ngay lập tức
+
+Ảnh dưới đây để thấy rõ các bước shutdown sequence.
+![System Diagram](./Overview_shutdown_sequence.png)
+
+</details>
+</details>
+
+<h1><summary>6. ECUM Modules</summary></h1>
+<details>
+
+Thì ở phần này mình sẽ giải quyết tương đối về các cái khó hiểu từ phần trước, và có những cái thuật nghĩ ở phần trước tiếng Anh mình nói bằng tiếng Việt nên đọc lại phần trước chỉ là để tham khảo qua sequence, còn từ phần này sẽ hiểu sâu về việc sequence thực hiện như nào,
+
+<h2><summary>6.1 ECUM Introduction and Fixed ECUM</summary></h2>
+<details>
+
+Thì nói qua về ECU Manager thì đây là 1 module quan trong trọng việc quản lý vongf đời ECU. Thì nó sẽ có chức năng cơ bản sau:
+- Init và deinit OS, SchM (Scheduler Manager) và BswM cũng như 1 số các module BSW.
+- Config ECU ở chế độ SLEEP hay SHUTDOWN.
+- Quản lý tất cả các sự kiện wakeup trên ECU.
+- ECU Manager module cung cấp cái protocol để phân biệt hay kiểm định được đou là sự kiện real wakeup và đou là eratic(giả) event.
+
+Nói thêm về wakeup event thì nói về cái này khá nhiều nãy h là nó là tín hiệu đánh thức ECU từ chế độ Sleep/Low-power trở lại trạng thái hoạt động(Run). Việc Wakeup này có thể đến từ CAN bus nhận dữ liệu, nút nhấn, timer, cảm biến, tín hiệu điện áp ngoài. Còn việc Wakeup Event giả(erratic) là kiểu nhiễu xảy ra làm tác động đến các chân wakeup đó.
+
+**Sự khác nhau giữa Fixed EcuM and Flexible EcuM**
+- Đầu tiên như cái tên thì Fixed EcuM là nó sẽ fixed cứng quá trình chạy của ECU kiểu Startup -> RUN -> Sleep. Và Fixed EcuM chỉ có 3 states chính thoi là OFF, RUN, SLEEP và sự chuyển đổi giữa các trạng thái này là STARTUP và SHUTDOWN. Thì với việc là nó cố định như này thì fixed EcuM chỉ phù hợp với những ECU không yêu cầu đặc biệt như startup 1 phần hoặc startup nhanh. Và Fixed ECUM không hỗ trợ cho ECUs có multi-core.
+- Về flexiable EcuM thì mạnh mẽ hơn và tập hợp trạng thái cố định và chuyển đổi giữa chúng để cho phép các tình huống sau:
+    - Partial startup or fast startup(thì cái đấy là nó sẽ khởi động 1 phần của hệ thống những cái cần thiết, còn fast thì khởi động toàn bộ nhưng với tốc độ nhanh)
+DCM bao h xem lại
 
 
 </details>
 </details>
+
+<h1><summary>CAN</summary></h1>
+<details>
+
+Thì cái phần time quanta ảo quá nên t phải ghi lại
+Thì nói qua là các node sẽ đồng bộ về mặt time với nhau, nhưng mà CAN bus là đường dây vật lý nên nhiều lúc sẽ có sai số.
+Thì 1 cái bit sẽ có 4 segment:
+- sync segment: dùng để bảo à đến lúc bit này bắt đầu này (theo đúng thời gian định sẵn) nhưng trên thực tế đường CAN Bus lúc đó có thể bị lệch.
+- propagation segment: cơ bản cái này nó giúp kéo dài thời gian, để cho các Node ở xa nhau về mặt vật lý có đủ thời gian nhận ra nhau. (Ví dụ dây CAN dài 20m ECU A phát tín hiệu cho ECU B, dù trong dây điện đi với tốc độ ánh sáng nhưng vẫn có độ trễ trong việc gửi tín hiệu -> Node B có thể đọc sớm quá -> tạo ra propagation để kéo dài thời gian đọc).
+- phase segment 1: dùng để bù thời gian theo đơn vị time quanta mà số lượng bù được bao nhiêu dựa vào SJW(1-4QT tức là nếu nó được set là 1 QT thì bù vào tối đa chỉ có 1QT thoi)
+- phase segment 2: dùng để bớt thời gian tính theo đơn vị QT (trường hợp này xảy ra nếu sync segment đến muộn hơn dự kiến thì phải rút ngắn lại)
+
+Oke giờ ví dụ nhóo thì giả sử 2 Node A(gửi), B(nhận) mình thiết lập nó như nhau. Giờ Node A nó gửi nhanh đúng không, tức là cái CAN bus nó xuống mức 0 sớm hơn dự kiến, thì bên B nó mới thấy là à, mức tín hiệu đang bị sớm và từ đó nó sẽ dựa vào cái thời gian mà cả 2 thống nhất và thời gian thực tế truyền nhận mà cái Node B hay node nhận chính là người điều chỉnh Phase Segment 1,2.
+
+</details>
+
