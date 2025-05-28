@@ -440,13 +440,123 @@ Nói thêm về wakeup event thì nói về cái này khá nhiều nãy h là n�
     - Partial startup or fast startup(thì cái đấy là nó sẽ khởi động 1 phần của hệ thống những cái cần thiết, còn fast thì khởi động toàn bộ nhưng với tốc độ nhanh)
     -Có nhiều trạng thái (operational state) và có nhiều core trên 1 ECU nên mỗi nới có thể có trạng thái khác nhau như STARTUP, SHUTDOWN
 
+Giờ hình ảnh này sẽ nói rõ hơn về các States trong Fixed ECUM:
 
-</details>
+![System diagram](./main_step_of_fixed_ECUM.png)
+
+Nói qua về các trạng thái khá quan trọng:
+- Startup state: nó sẽ chia trạng thái thành 2 phần, 1 là trước khi OS được init và sau khi OS được init. Mục đích của Startup là khởi tạo BSW modules.
+- RUN State: Sau khi tất cả các module của BSW gồm OS và RTE được init, thì EcuM sẽ vào trạng thái RUN state. Nó se chỉ định các SWCs trong Application layer là sẽ liên quan tới các RTE and BSW đã được init. Và bây h nó có thể bắt đầu chạy các chức năng.
+- Shutdown State: Nó sẽ xử lý và kiểm soát quá trình shutdown của BSW modules. Và kết quả là sẽ đưa ra 3 cái target cho ECU là SLEEP, OFF, or Reset. (thì 3 cái trạng thái này như cái tên của nó nên không làm).
+- Wakeup State: Là sự kiện xảy ra khi ta bị đánh thức khi đang ở trạng thái SLEEP. Thì ở trạng thái này nó sẽ kiểm tra xem sự kiện đánh thức kia là đúng hay giả vờ, vì thi thoảng sẽ có các điều kiện lỗi làm đánh thức hệ thống.
 </details>
 
-<h1><summary>NvM</summary></h1>
+<h2><summary>6.2 Flexible EcuM states </summary></h2>
 <details>
-<h2><summary>NvM Intoduction</summary></h2>
+
+![System diagram](./phase_flexible_EcuM.png)
+
+Thì nhìn vào cái này nó khá rối :v nhưng về cơ bản trước thì nó sẽ có 4 phần chính là STARTUP, UP, SHUTDOWN, SLEEP (trong các phần này sẽ có nhiều phần nhỏ khác ta sẽ phân tích sau).
+
+- Startup Phase: thì nhìn nó khá giống với cái fixed sẽ có 2 phần trước và sau OS init. Mục đích chính của START phase là init các cái BSW khác nhau.
+- UP Phase: Thì vào giai đoạn này sẽ là giai đoạn bắt đầu chạy OS và hoàn thành quá trình init SchM và BswM.
+- Shutdown Phase: thì quá trình này đơn giản là quản lý quá trình shutdown các BSW modules thoi, và sẽ chọn 2 target state OFF or Reset thay vì 3 như fixed EcuM.
+
+</details>
+
+<h2><summary>6.3 Start up phase </summary></h2>
+<details>
+
+![System diagram](./startup_phase.png)
+
+Thì cái hình ảnh trên nói về giai đoạn startup kĩ hơn, kiểu trước và sau OS init chuyện gì xảy ra. Được rồi giờ ta sẽ nói sẽ từng phần
+
+- Activities prior to EcuM_init: đây nói về hành động trước khi vào EcuM_init, dựa vào hình để biết rõ hơn. Thì khi ECU được bật thì MCU sẽ init, đầu tiên nó sẽ nhảy tới vector table để mà chạy quá trình bootloader code. Kiểu trong quá trình bootloader mình biết là quá trình đẩy code vào hệ thống như kiểu khởi tạo bảng vector table(trong đó có khởi tạo vùng stack), đẩy dữ liệu từ memory lên RAM, init những BSW modules cơ bản (kiểu các module nó không liên kết với nhau hoặc không liên quan đến OS là các module cơ bản), thì việc init này sẽ được thực hiện bởi code C. Đó thì ngoài ra nó còn khởi tạo các C variables. Và sau đó sẽ call tới EcuM_Init() đây là 1 hàm hay 1 API để gọi tới ECU State Manager và nó sẽ bắt đầu tiến hành quá trình tiếp theo của startup.
+- Activities in StartPreOs sequence: Ở giai đoạn này về cơ bản ta sẽ khởi tạo toàn bộ BSW module để bắt đầu OS. Thì quá trình việc nó khởi tạo OS như nào thì sẽ có hẳn 1 cái bảng các hành động trong cái StartPreOs sequence này rùi nó mới gọi tới StartOS(). Thì dưới đây là bảng và ta sẽ nói qua về từng cái
+![System diagram](./StartPreOS_Sequence.png)
+
+Thì theo lần lượt cái init đầu nó sẽ khởi tạo các cái interrupt priority (giống cái bảng vector table). Tiếp theo init block 0 này nó sẽ gọi các driver init và các cái low level code. Tiếp theo ở quá trình này sẽ thực hiện post-build . Và các bước tiếp theo nó sẽ kiểm tra và hoàn thành các cái modules còn lại. Và cuối cùng sẽ start OS. Bảng bên dưới sẽ đưa ta cái nhìn khái quát về quá trình trong StartPreOS Sequence.
+
+![System diagram](./Overview_shutdown_sequence.png)
+
+- Tiếp đến StartPostOS Sequence: Thì nó sẽ dựa vào bảng dưới đây chủ yếu nó sẽ khai báo các Scheduler của hệ thống thoi
+
+![System diagram](./startPostOs_Sequence.png)
+
+![System diagram](./startPostOs_Sequence-2.png)
+</details>
+
+<h2><summary>6.4 Shutdown phase </summary></h2>
+<details>
+
+Thoi phần này xem video chứ dell biết ghi gì.
+
+Về cơ bản là nó sẽ nói về tắt lần lượt cái gì kiểu tắt OS, tắt hook, deinit BSWM, deinit SchM, xong xem có target shutdown không hay có wakeup không. Ncl xem video thì sẽ rõ hơn. Nhưng cơ bản nó cũm chỉ lần lượt như vậy
+
+</details>
+
+<h2><summary>6.5 Shutdown Target </summary></h2>
+<details>
+Hmmmm phần này chỉ xem thoi, chả có gì đáng để ghi cả 
+</details>
+
+<h2><summary>6.6 UP Phase </summary></h2>
+<details>
+
+Thì ở cái UP Phase này thì EcuM_MainFunction sẽ được thực thi và có 3 chức năng chính.
+- Đầu tiên kiểm tra xem wakeup sources(gồm NONE State, PENDING State, VALIDATED State, EXPRIED State) được woke up chưa .
+- Tiếp đến sẽ kiểm tra Alarm Clock Timer
+- Và nó kiểu nằm giữa để phân đoạn RUN và POST_RUN
+-> Thì cái giai đoạn UP Phase này chỉ yếu sinh ra sẽ là nơi mà wakeup nó sẽ chạy vào đầu tiên khi nó tỉnh lại. Ví cái UP Phase là nằm ở giai đoạn thiết lập xong hết mọi thứ ròi, chỉ việc chạy thoi.
+
+Ở bài còn nói về sơ đồ của Wakeup Source nên có thể xem lại để hiểu hơn, chứ không biết ghi gì.
+</details>
+
+<h2><summary>6.7 Sleep Phase </summary></h2>
+<details>
+
+NCL cái phần nàu cũm chỉ nên xem video để nó nói về giai đoạn sleep như nào
+</details>
+<h2><summary>6.8 Mode Handling </summary></h2>
+<details>
+
+![System diagram](./EcuM_Mode_Handling.png)
+
+Đây là hình ảnh sẽ cho thấy EcuM sẽ nằm ở đâu trong hệ thống.
+Và như ta biết EcuMFlex sẽ phân phối những request và releases được tạo bởi SWCs tới BswM. Sự kết hợp giữa EcuM và BswM là điều bắt buộc vì BswM là người quyết định các trạng thái khác nhau có thể được tạo ra và EcuM chỉ là người nhờ vào BswM để hiện thị các trạng thái đó lên. Uuuu vậy là dựa vào bà trong udemy nói là thật thì BswM sẽ là người cung cấp State. Còn mấy cái Current hay Request State giống như là gửi thông báo chứ không tác động vào trạng thái của State. Kiểu nhiều lúc bên SWC nó cũm muốn yêu cầu State kiểu vậy, kiểu t muốn tắt, m cho t tắt đi :v. Phân biệt giữa release và request ví dụ yêu cầu 1 cái State thì sẽ gọi là released, còn nếu mà mình đã nhận được cái yêu cầu đó thì mình sẽ gửi lại 1 thông báo thì đó là request.
+
+Oke giờ nói về các State:
+- STARTUP: khai báo init thoi thì nó sẽ được set bởi RTE whi mà RTE_Start() được call thoi.
+- RUN: khi mà các BSW cần thiết được thiết lập thì BswM sẽ chuyển quan chế độ này.
+- POST_RUN(là giai đoạn mà chương trình sắp bước vào SHUTDOWN, ở đây sẽ thực hiện 1 số chương trình trước khi tắt): EcuM yêu cầu POST_RUN khi mà việc thực hiện RUN không khả dụng nữa.
+- SLEEP: EcuM request SLEEP Mode khi mà việc RUN hay POST_RUN không khả dụng nữa và shutdown chọn target là Sleep
+- SHUTDOWN: tương tự như SLEEP nhưng target được chọn ở đây là SHUTDOWN 
+
+Giờ thì cái ECUM cũm sẽ liên quan tới việc Bootloader, cung cấp cho bootloader 2 hàm để Bootloader chọn boot target
+
+Các lỗi sẽ có thể xảy ra trong quá trình startup và shutdown:
+- Vấn đề về lỗi config liên quan đến EcuM
+- BSWM sẽ chịu trách nhiệm về báo lỗi của nó
+- Ngoài ra còn các lỗi Hook như Ram check trong lucs wakeup bị lỗi, postbuild config data bị lỗi, lỗi code-> còn mã lỗi như nào lên video mà xem :v. Ngoài ra tiếp còn các lỗi development cũm là lên video xem chứ nhớ sao hết lỗi.
+</details>
+</details>
+
+<h1><summary>7. BSWM Module</summary></h1>
+<details>
+<h2><summary>7.1. Intoduction</summary></h2>
+<details>
+
+Thì giờ mình sẽ đi giải thích chức năng BSWM module chắc cũng là phần quan trọng nhất ròi :v vì các phần sau cũm dell hiểu gì đâu
+
+- Thì BSW Mode Manager là module thực thi việc quản lí Vehicle Mode và Application Mode(đây là các mode có trong xe thoi thì t đoán ví dụ mình thay đổi mode như nào thì SWC hay xe của mình cũm sẽ thay đổi tương ứng và BSW sẽ quản lý 2 cái mode này)
+- BSWM sẽ chịu trách nhiệm ứng xử các mode requests từ SWC hoặc các BSW Modules
+
+</details>
+</details>
+
+<h1><summary>12.NvM</summary></h1>
+<details>
+<h2><summary>12.1.NvM Intoduction</summary></h2>
 <details>
 
 **Explain about NVRAM Manager**
@@ -466,10 +576,10 @@ Thì so sánh cái này giống như so sánh giữa RAM và Flash vậy.
 Thì 2 cái này đều lưu rữ non-volatile memory thì Flash sẽ có tốc độ truy cập tới Memory chậm hơn so với EEPROM. Ngoài ra điểm lưu í lơn nhất là Flash sẽ xóa từng khối, còn EEPROM là xóa theo byte, flash cũm sẽ rẻ hơn nữa hehe.
 </details>
 
-<h2><summary>Memory Stack Introduce</summary></h2>
+<h2><summary>12.2. Memory Stack Introduce</summary></h2>
 <details>
 
-![System diagram](Overview_memory_stack.png)
+![System diagram](./Overview_memory_stack.png)
 
 Thì dựa vào sơ đồ ta có thê thấy các lớp như nào, thì ta có câu hỏi là MEMIF làm gì? Thì nó sẽ là lớp trừu tượng của cả 2 EEPROM và Flash. Ví dụ như SWC gọi xuống là muốn lưu vào bộ nhớ không mất dữ liệu. Thì NvM
 sẽ xử lý yêu cầu này và gửi xuống cho MemIf và Memif có nhiệm vụ là phân bổ xuống đúng module ví dụ như bên SWC gọi(Fee_Write() thì phải gọi trên flash). Và điều này giúp NvM sẽ không cần quan tâm cách phân luồng truyền -> tái sử dụng cao hơn.
@@ -477,10 +587,10 @@ sẽ xử lý yêu cầu này và gửi xuống cho MemIf và Memif có nhiệm 
 
 </details>
 
-<h2><summary>NvM Interaction with other Modules</summary></h2>
+<h2><summary>12.3. NvM Interaction with other Modules</summary></h2>
 <details>
 
-![System Diagram](NvM_Interact.png)
+![System Diagram](./NvM_Interact.png)
 
 Dựa vào hình này ta có thể thấy các module sẽ làm việc được với NVM
 
@@ -493,12 +603,44 @@ Ngoài những cái trên thì NvM cũm có thể làm việc với BswM, Det an
 
 </details>
 
-<h2><summary>Flow of Read and Wite Instructions</summary></h2>
+<h2><summary>12.4. Flow of Read and Wite Instructions</summary></h2>
 <details>
 
 Bài này chỉ xem thoi.
 
 </details>
+
+<h2><summary>12.5. Basic storage objects</summary></h2>
+<details>
+
+Phần này sẽ nói về các storage objects cơ bản 
+**RAM Block**
+- Thì cái vùng RAM block này sẽ có những đặc điểm cơ bản của RAM là nơi lưu trữ data và CRC value(check lỗi). Thì vùng RAM này có chứa cả những dữ liệu thay đổi được và không. Lạ ở đây cái nó bảo RAM block data được gắn chính xác 1 SWC hoặc BSW module, ở đây có thể nó muốn bảo là mỗi cái SWC sẽ có 1 vùng nhớ RAM riêng biệt.
+
+**NV Block**
+- NV block là 1 block non volatile, và nó cũm là logical block được tạo trong Fee/Ea(Flash/EEPROM).
+- Thì NV block header sẽ nằm đầu tiên trong NV block nếu mà cơ chế Static Block ID enabled (tức là cái header này là optional có cũm được mà không có cũm được)
+- NV block CRC (optinal) nó sẽ được config dựa trên việc người dùng yêu cầu hay không, và nó dùng để ktra lỗi của block.
+- Cuối cung thì nội dung của NV Block thì nó sẽ lưu dữ iệu từ người dùng thoi, nhưng í là nó sẽ lưu dữ liệu trực tiếp kiểu lưu trong quá trình run luôn áa. Tức là người dùng ở SWC chỉ cần gọi thông qua API NvM như NvM_WriteBlock là oke hết.
+ 
+**ROM Block**
+- Thì cái ROM này cũm như Flash thoi, lưu dữ liệu. Và khác cái là nó sẽ không thể được thay đổi trong quá trình run-time. Nó được sử dụng để lưu data mặc định trong trường hợp NV Block bị lỗi.
+
+</details>
+
+<h2><summary>12.6. Admintration Block</summary></h2>
+<details>
+Theo như chatgpt thì cái này nó là để lưu trư thông tin quản lý của NV Block thoi, chẳng hạn như quản lí trạng thái hợp lệ của dữ liệu, CRC checksum để kiểm trra lỗi, phiên bản hoặc counter, marker flag khi mà ghi chưa xong.
+Nói chung là kể cả đọc xong cái ở trong udemy thì t vẫn thấy nó quản lý bộ nhớ thoi và đọc thì nó bao gồm cả RAM cũm có admintration nữa thì phải.
+
+</details>
+<h2><summary>12.7.Block Management Types</summary></h2>
+<details>
+
+Khả năng từ bài này sẽ xem tổng quan thoi nên sẽ không có các phần bên dưới
+
+</details>
+
 
 
 </details>
