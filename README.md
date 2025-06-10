@@ -81,4 +81,83 @@ Là thành phần phần mềm được load động vào kernel để chạy. C
 
 Tùy vào cấu hình khi biên dịch kernel mà mỗi module, hoặc nhóm module sẽ được tích hợp sẵn vào bên trong kernel (file zImage hoặc uImage) hoặc được load khi hệ thống đang chạy.
 
+Ứng dụng 
+
+**Quá trình Boot**: thực ra khá là quan trọng
+
+https://viblo.asia/p/linux-boot-process-a-z-1Je5E6XLKnL
+
+
+**Chức năng của Device Tree**
+
+Vai trò thật sự của Device Tree với GPIO (và phần cứng nói chung)
+
+Device Tree **không điều khiển phần cứng trực tiếp**, nhưng **mô tả phần cứng đó cho kernel** biết:
+
+* GPIO nào được dùng.
+* GPIO đó dùng cho thiết bị gì (LED, nút nhấn, UART, I2C, SPI,...).
+* Cấu hình của chân đó (input/output, active high/low\...).
+
+> 👉 Dựa trên mô tả này, **kernel sẽ nạp đúng device driver** và **driver sẽ tạo interface (như file trong `/dev` hay `/sys`) để user space có thể tương tác với thiết bị**.
+
+---
+
+📌 **Nói cách khác:**
+
+| GPIO           | Vai trò trong Device Tree | Sau boot sẽ thấy gì?                              |
+| -------------- | ------------------------- | ------------------------------------------------- |
+| GPIO21         | Dùng cho LED              | `/sys/class/leds/user-led/brightness`             |
+| GPIO17         | Dùng cho nút nhấn         | `/dev/input/eventX` (nếu có dùng input subsystem) |
+| GPIO3, GPIO4   | Dùng cho I2C bus          | `/dev/i2c-1`                                      |
+| GPIO14, GPIO15 | Dùng cho UART             | `/dev/ttyS0`, `/dev/ttyAMA0`, etc.                |
+
+---
+
+📦 Ví dụ mở rộng – Device Tree dùng GPIO cho nhiều thiết bị:
+
+```dts
+/ {
+    leds {
+        compatible = "gpio-leds";
+
+        led1 {
+            label = "status-led";
+            gpios = <&gpio1 21 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+    };
+
+    buttons {
+        compatible = "gpio-keys";
+
+        button1 {
+            label = "reset-button";
+            gpios = <&gpio1 17 GPIO_ACTIVE_LOW>;
+            linux,code = <KEY_RESET>;
+        };
+    };
+};
+```
+
+👉 Sau khi boot:
+
+* `/sys/class/leds/status-led/...`
+* `/dev/input/eventX` được tạo cho nút nhấn
+
+---
+
+ Kết luận
+
+✔️ **Device Tree mô tả từng GPIO sẽ dùng để làm gì**
+✔️ **Kernel đọc Device Tree -> nạp đúng driver -> tạo ra device file hoặc sysfs**
+✔️ **App user-space chỉ cần làm việc với /dev hoặc /sys, không cần biết chi tiết GPIO số mấy**
+
+---
+
+Nếu bạn muốn, mình có thể:
+
+* ✅ Gợi ý cách debug xem GPIO nào đang được dùng và được ánh xạ như thế nào trong hệ thống Linux bạn đang dùng.
+* ✅ Hướng dẫn viết Device Tree đơn giản cho LED hoặc button từ đầu (có thể dùng với qemu hoặc board thực như Raspberry Pi, STM32MP1, i.MX6,...).
+
+
 </details>
