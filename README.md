@@ -411,7 +411,7 @@ Xong chta sẽ cho MSP hoặc PSP: PSP = TaskA->nextPt->stackPt vậy là lấy 
 <h2><summary> 10.The Scheduler and Scheduling Alogorithm </summary></h2>
 <details>
 
-***The Scheduler: Thread has 3 three state**
+**The Scheduler: Thread has 3 three state**
 Trong 1 thời điểm chỉ có 1 thread hay 1 task được thực thi bởi processor. Và cái scheduler này sẽ do mình lập ra, cái độ ưu tiên cũm do mình lập ra giữa các task/thread. Gần tương tự như ngắt, nhưng khác chỗ là ngắt là phần cứng được fixed sẵn trong ISR, còn đây nó sẽ giống như các hàm bình thường và mình lập lịch ưu tiên cho các hàm này thoi. 
 
 - Running: là task/thread mà processor đang thực thi.
@@ -430,12 +430,12 @@ Các trạng thái chuyển đổi trong schedular:
 
 - BLOCK-READY: là khi 1 sự kiện xảy ra mà nó có priority thấp hơn RUNNING Task thì nó sẽ vào READY để đợi thoi.
 
-***Process vs Thread:**
+**Process vs Thread:**
 - Process tức là 1 chương trình sẽ có vùng nhớ riêng, tức là các process sẽ không liên quan gì đến nhau.
 - Đối với Thread thì nó nằm trong process tức là các thread sẽ có vùng nhớ chung, nó chỉ khác mỗi stack thoi. Và cũm có thể nói Thread chính là các task trong chương trình.
 
 
-***Scheduler Classification:**
+**Scheduler Classification:**
 Này nó là các phân loại kế hoạch lập lịch như dựa vào thời gian, tính định trước hoặc cách hoạt động. Như trong bài ta có Static Scheduling, Dynamic Scheduling và Preemptive Scheduling, Non-premptive Scheduling.
 
 - Static Scheduling, Dynamic Scheduling: Phân loại theo thời điểm quyết định lập lịch với Static sẽ được lập trước khi compile-time hay trước khi chạy, phù hợp trong hard real-time, nơi mà tính toán thời gian cực kỳ quan trọng. Còn trái lại vói Static là Dynamic thì thời điểm quyết định được thực hiện khi hệ thống đang chạy run-time.
@@ -444,13 +444,13 @@ Này nó là các phân loại kế hoạch lập lịch như dựa vào thời 
 
 - Các group of classification (nhóm phân loại) dựa vào các phân loại mình nói trên ta sẽ có: Dynamic preemptive algorithms, Static Preemptive algorthms, Dynamic Non-preemptive algorithms, Static Non-preemptive algorithms.
 
-***Preemption:**
+**Preemption:**
 Thì í muốn nói thì như nào là preemption ? Là khi OS di chuyển thread từ RUN State về Ready State, tức là khi có 1 ưu tiên ngắt cao hơn xảy ra thì cái thread hiện tại sẽ phải về Ready State. Vậy sao từ Run State đến Blocked State không thể hiện là preemption? Thì cái từ Run State đến Blocked State nó xảy ra khi cái thread này thực hiện xong ròi, vậy có khác dì thực hiện tuần tự đâu, kiểu 1 task xong lại đến task khác. Vậy nên mới bảo preemption scheduling sẽ là RUN State về Ready State. Vậy tại sao OS lại làm như vậy, tạo ra preemption algorithm? Thì Preemption is needed to guarantee fairness(cần để đảm bảo sự công bằng giữa các thread như thời gian chạy và công bằng về độ ưu tiên), Preemption needs an interrupts. Preemption helps meet deadlines (giúp đáp ứng giao hạn cho từng thread).
 
-***Scheduler Criteria (Tiêu chí lập lịch / Tiêu chuẩn):**
+**Scheduler Criteria (Tiêu chí lập lịch / Tiêu chuẩn):**
 Đây là những tiêu chí hay tiêu chuẩn để đo mức độ hiệu quả, cũm như phù hợp của 1 scheduler với hệ thống.
 
-- Throughput nói về số task thực hiện được trong 1 đơn vị time hay trong 1 khoảng thời gian thực hiện được bao nhiêu task (thông lượng).
+- Throughput nói về số task hoàn thành được trong 1 đơn vị time hay trong 1 khoảng thời gian thực hiện được bao nhiêu task nhưng mà phải là hoàn thành(thông lượng).
 
 - Turnaround time (thời gian hoàn thành): là thời gian mà 1 task thực hiện, từ lúc bắt đầu đến lúc kết thúc (time hoàn thành 1 task này thường không cố định nếu như xảy ra ngắt). 
 
@@ -459,6 +459,16 @@ Thì í muốn nói thì như nào là preemption ? Là khi OS di chuyển threa
 - CPU Utilization: là tỷ lệ phần trăm thời gian mà CPU bận làm việc, so với tổng thời gian hệ thống chạy.
 
 - Wait Time: là tổng thời gian thread nằm trong hàng đợi chờ được chạy.
+
+**CPU Utilization**
+
+Nói về thời gian mà mình sử dụng CPU ví dụ như CPU Speed của hệ thống là 80MHz, mà mình chỉ sử dụng CPU 45MHz -> 45/80 *100 -> 56,25% -> việc này không tối ưu. Và làm sao để tính thời gian mà CPU sử dụng thì có công thức dưới đây.
+![System diagram](./FormulaCPU.png)
+
+Thì giải thích thêm về xích ma thì nó sẽ chạy từ i -> n với i ở đây = 1 và biểu thức đằng sau xích ma là sẽ cộng liên tục.
+
+**Sheduler Algorithm Optimization Criteria**
+Thì nói về việc điều gì sẽ là tối ưu thì đầu tiên là maximize throughput chắc chắn ròi ta sẽ tối ưu việc chạy cho nhiều task hoàn thành trong 1 thời gian cố định.
 
 </details>
 </details>
