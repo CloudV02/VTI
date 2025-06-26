@@ -1,0 +1,92 @@
+1. Linux BSP (Board Support Package) là gì?
+Linux BSP là tập hợp phần mềm cần thiết để chạy hệ điều hành Linux trên một bo mạch (hardware platform) cụ thể, ví dụ như STM32MP1, i.MX6, BeagleBone, Raspberry Pi,...
+- Thành phần của BSP gồm:
+Bootloader (ví dụ: U-Boot)
+Kernel (nhân Linux)
+Device Tree (Cây thiết bị)
+Root File System (Rootfs)
+Driver thiết bị (Device Driver)
+Các công cụ cấu hình & hỗ trợ (toolchain, scripts, etc)
+
+2. Kernel (Nhân Linux)
+Là trái tim của hệ điều hành Linux.
+Quản lý bộ nhớ, tiến trình, file system, IPC, và giao tiếp với thiết bị phần cứng.
+Được cấu hình và biên dịch riêng cho từng bo mạch.
+Output thường là: zImage, uImage, Image, vmlinuz.
+
+3. U-Boot (Bootloader)
+Chương trình chạy đầu tiên sau khi bật nguồn.
+Làm nhiệm vụ:
+Thiết lập bộ nhớ RAM, CPU, clock,...
+Nạp kernel, device tree, rootfs vào RAM.
+Chuyển quyền điều khiển cho kernel (bootm, bootz,…).
+
+4. Device Tree (DTB)
+Là file mô tả phần cứng cho kernel dưới dạng cây.
+Kernel sử dụng để biết bo mạch có những thiết bị gì (UART, SPI, I2C, LED, LCD,...), địa chỉ, ngắt...
+Viết bằng ngôn ngữ DTS → biên dịch thành DTB.
+Ví dụ: stm32mp157c-ev1.dts → stm32mp157c-ev1.dtb.
+
+Cái này sẽ load cùng với kernel có thể nói nó giống như 1 cái map kiểu kết nối driver của kernel với địa chỉ của phần cứng xong khi kết nối xong mới hiện thị các rootfs.
+
+
+5. Root File System (rootfs)
+Là file hệ thống gốc chứa:
+Thư mục Linux tiêu chuẩn (/bin, /etc, /lib, /dev, /proc, ...)
+Chương trình người dùng (busybox, bash, systemd, ssh,...)
+Thư viện hệ thống, cấu hình thiết bị,...
+Có thể là định dạng: ext4, squashfs, cramfs, hoặc chỉ là thư mục được mount qua NFS.
+
+- Các mục cơ bản như: bin gồm các lệnh thuyết yếu như ls, cp, mv, ..
+/dev chứa các file đại diện cho driver 
+
+6. User Space vs Kernel Space
+- Kernel space:
+Phần chạy trong chế độ đặc quyền của CPU.
+Gồm kernel, driver, ngắt, hệ thống tập tin,...
+- User space:
+Phần chương trình người dùng (app, shell, daemon,...)
+Không thể truy cập trực tiếp phần cứng.
+
+->User space giao tiếp với kernel space qua system calls.
+
+7. Device Driver (Trình điều khiển thiết bị)
+- Là mã chạy trong kernel, xử lý giao tiếp trực tiếp với phần cứng.
+- Nhiệm vụ:
++ Nhận yêu cầu từ ứng dụng (user space)
++ Chuyển thành hành động trên phần cứng (đọc/ghi SPI, UART, LED,...)
+Viết bằng ngôn ngữ C, thường là file .c và biên dịch ra .ko (kernel object).
++ Là phần mềm ẩn sau hệ thống file.
+
+Ví dụ: spi-dev.c là driver để hỗ trợ giao tiếp với SPI từ user-space.
+
+8. Device File (Tập tin thiết bị trong /dev)
+- Là một interface để user-space truy cập thiết bị, đại diện cho một phần cứng nào đó.
+Do kernel tạo ra dựa trên device driver đang hoạt động.
+- Người dùng thao tác với thiết bị thông qua file này như thao tác với file bình thường: open(), read(), write(), ioctl()...
+
+VD liên quan: 
+step 1. Bạn (user) chạy trong user-space: int fd = open("/dev/ttyS0", O_RDWR);
+
+step 2. Kernel-space xử lý:
+/dev/ttyS0 là device file đại diện cho thiết bị UART, ví dụ:
++Major number: 4 (for serial)
++Minor number: 64 (for ttyS0) 
+
+step 3. Kernel tra cứu bảng major number:
+Tìm ra driver đã đăng ký với major 4.
+Trong driver đó đã đăng ký một file_operations struct
+
+step 4. Kernel gọi:
+uart_fops.open(...)  // Tức là gọi hàm uart_open() đã được khai báo
+->Đây chính là hàm bên trong driver đã được biên dịch, không còn là uart.c ở dạng text/code nữa. -> không thể thay đổi file trong lúc đang chạy.
+
+
+
+IPC nằm trong kernal và nó là người quản lý giữa các tiến trình, giống như ta chạy các thread, thì nó sẽ là người quản lý để các thread đấy không bị xung đột kiểu như chung bộ nhớ hoặc chung vùng làm việc. Đọc kĩ hơn trên chatgpt.
+IPC (Inter-Process Communication) là các cơ chế cho phép các tiến trình (process) giao tiếp và chia sẻ dữ liệu với nhau trong hệ điều hành.
+Vì mỗi process có không gian bộ nhớ riêng biệt, nên không thể chia sẻ biến toàn cục như thread — do đó cần IPC.
+
+2. IOT
+- MQTT là giao thức nhắn tin nhẹ, hoạt động theo mô hình publish/subribebe, thường dùng trong iot và hệ thống mạng có băng thông thấp. Nghĩa là nó truyền vẫn nhanh nhưng nó không truyền được các dữ liệu lớn như video, hình ảnh và khả năng real-time không bằng các giao thức khác
+- mosquitto-clients chỉ là công cụ CLI (command-line tools) để giúp bạn gửi/nhận MQTT dễ dàng từ dòng lệnh.
